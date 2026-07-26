@@ -1,0 +1,17 @@
+name: Weekly rebuild
+
+# Triggers a fresh Vercel build, which re-fetches step-tagged posts from
+# first164.blogspot.com. Also runnable by hand from the Actions tab.
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        run: curl -fsS -X POST "$DEPLOY_HOOK" > /dev/null && echo "rebuild triggered"
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}

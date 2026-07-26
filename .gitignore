@@ -3,3 +3,5 @@ node_modules/
 .panel/
 .vercel/
 .DS_Store
+.vercel
+.env*
