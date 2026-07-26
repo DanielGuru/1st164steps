@@ -1,0 +1,9 @@
+{
+  "name": "1st164steps",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "export-stepwork": "node scripts/export-stepwork.mjs"
+  }
+}
