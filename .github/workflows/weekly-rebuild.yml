@@ -7,6 +7,9 @@ on:
     - cron: '0 6 * * 1' # Mondays 06:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   rebuild:
     runs-on: ubuntu-latest
@@ -15,3 +18,10 @@ jobs:
         run: curl -fsS -X POST "$DEPLOY_HOOK" > /dev/null && echo "rebuild triggered"
         env:
           DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+
+      # GitHub disables scheduled workflows after 60 days without commits.
+      # Pushes an empty commit when the last one is older than 45 days.
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          time_elapsed: 45
