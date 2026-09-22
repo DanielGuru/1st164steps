@@ -20,8 +20,15 @@ jobs:
           DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
       # GitHub disables scheduled workflows after 60 days without commits.
-      # Pushes an empty commit when the last one is older than 45 days.
+      # Push an empty commit when the last one is older than 45 days.
       - uses: actions/checkout@v4
-      - uses: gautamkrishnar/keepalive-workflow@v2
-        with:
-          time_elapsed: 45
+      - name: Keep repository active
+        run: |
+          last=$(git log -1 --format=%ct)
+          age=$(( ($(date +%s) - last) / 86400 ))
+          echo "last commit ${age}d ago"
+          if [ "$age" -lt 45 ]; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keep scheduled workflow active"
+          git push
